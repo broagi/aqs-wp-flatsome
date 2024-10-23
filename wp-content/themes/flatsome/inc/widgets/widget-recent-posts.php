@@ -1,0 +1,153 @@
+<?php
+
+add_action( 'widgets_init', 'recent_posts_widget' );
+
+function recent_posts_widget() {
+
+	register_widget( 'Flatsome_Recent_Post_Widget' );
+}
+
+/**
+ * Recent_Posts widget class
+ *
+ * @since 2.8.0
+ */
+class Flatsome_Recent_Post_Widget extends WP_Widget {
+
+	function __construct() {
+		$widget_ops = array( 'classname' => 'flatsome_recent_posts', 'description' => __('A widget that displays recent posts ', 'flatsome'), 'customize_selective_refresh' => true);
+
+		$control_ops = array( 'id_base' => 'flatsome_recent_posts' );
+
+		parent::__construct( 'flatsome_recent_posts', __('Flatsome Recent Posts', 'flatsome'), $widget_ops, $control_ops );
+	}
+
+	function widget($args, $instance) {
+
+		$cache = wp_cache_get('widget_recent_posts', 'widget');
+
+		if ( !is_array($cache) )
+			$cache = array();
+
+		if ( !isset( $args['widget_id'] ) )
+			$args['widget_id'] = $this->id;
+
+		if ( isset( $cache[ $args['widget_id'] ] ) ) {
+			echo $cache[ $args['widget_id'] ];
+			return;
+		}
+
+		ob_start();
+		extract($args);
+
+		if ( empty( $instance['image'] ) ) $instance['image'] = false;
+		$is_image = $instance['image'] ? 'true' : 'false';
+        
+        if ( empty( $instance['date-stamp'] ) ) $instance['date-stamp'] = false;
+		$is_date_stamp = $instance['date-stamp'] ? 'true' : 'false';
+
+		$title = apply_filters('widget_title', empty($instance['title']) ? __('Recent Posts', 'flatsome') : $instance['title'], $instance, $this->id_base);
+		if ( empty( $instance['number'] ) || ! $number = absint( $instance['number'] ) )
+ 			$number = 10;
+
+		$r = new WP_Query( apply_filters( 'widget_posts_args', array( 'posts_per_page' => $number, 'no_found_rows' => true, 'post_status' => 'publish', 'ignore_sticky_posts' => true ) ) );
+
+		if ($r->have_posts()) :
+?>
+		<?php echo $before_widget; ?>
+		<?php if ( $title ) echo $before_title . $title . $after_title; ?>
+		<?php echo '<ul>'; ?>
+		<?php while ( $r->have_posts() ) : $r->the_post(); ?>
+
+		<?php
+            $image_style = '';
+            if($is_image == 'true' && has_post_thumbnail() && $is_date_stamp == 'true') {
+                $image_style = 'style="background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.2) ), url('.wp_get_attachment_thumb_url(get_post_thumbnail_id(get_the_ID()) ).'); color:#fff; text-shadow:1px 1px 0px rgba(0,0,0,.5); border:0;"';
+            }
+            else if($is_image == 'true' && has_post_thumbnail() && $is_date_stamp == 'false') {
+                $image_style = 'style="background: url('.wp_get_attachment_thumb_url(get_post_thumbnail_id(get_the_ID()) ).'); border:0;"';
+            }
+        ?>
+
+		<div class="other-news clearfix">  
+							<div class="inner-content">  
+								<div class="post-thumbnail tie-appear">  
+									<a href="<?php the_permalink() ?>"><img src="<?php the_post_thumbnail_url(); ?>"></a>   
+								</div>
+								<div class="entry-in-post">
+									<span class="post-box-time">
+										<?php
+									        $postdate = get_field('ngay_dang');
+									        if($postdate[0] != 1){
+									    ?>
+										    <?php echo get_the_date('d/m/Y'); ?>
+									    <?php } ?>
+									</span>       
+									<h2 class="post-box-title">
+										<a href="<?php the_permalink() ?>"><?php the_title(); ?></a>
+									</h2>   
+									<div class="entry">
+										<p><?php
+										echo wp_trim_words( get_the_content(), 6, '...' );
+										?></p>
+									</div>  
+								</div>  
+							</div>   
+						</div>
+		<?php endwhile; ?>
+		<?php echo '</ul>'; ?>
+		<?php echo $after_widget; ?>
+<?php
+		// Reset the global $the_post as this query will have stomped on it
+		wp_reset_postdata();
+
+		endif;
+
+		$cache[$args['widget_id']] = ob_get_flush();
+		wp_cache_set('widget_recent_posts', $cache, 'widget');
+	}
+
+	function update( $new_instance, $old_instance ) {
+		$instance = $old_instance;
+		$instance['title'] = strip_tags($new_instance['title']);
+		$instance['number'] = (int) $new_instance['number'];
+	    $instance['image'] = $new_instance['image'];
+        $instance['date-stamp'] = $new_instance['date-stamp'];
+		$this->flush_widget_cache();
+
+		$alloptions = wp_cache_get( 'alloptions', 'options' );
+		if ( isset($alloptions['widget_recent_entries']) )
+			delete_option('widget_recent_entries');
+
+		return $instance;
+	}
+
+	function flush_widget_cache() {
+		wp_cache_delete('widget_recent_posts', 'widget');
+	}
+
+	function form( $instance ) {
+		$title     = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : '';
+		$number    = isset( $instance['number'] ) ? absint( $instance['number'] ) : 5;
+		$instance['image'] = isset( $instance['image'] ) ? $instance['image'] : false;
+        $instance['date-stamp'] = isset( $instance['date-stamp'] ) ? $instance['date-stamp'] : false;
+
+?>
+		<p><label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'flatsome' ); ?></label>
+		<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo $title; ?>" /></p>
+
+		<p><label for="<?php echo $this->get_field_id( 'number' ); ?>"><?php _e( 'Number of posts to show:', 'flatsome' ); ?></label>
+		<input id="<?php echo $this->get_field_id( 'number' ); ?>" name="<?php echo $this->get_field_name( 'number' ); ?>" type="text" value="<?php echo $number; ?>" size="3" /></p>
+
+ 		<p><input class="checkbox" type="checkbox" <?php checked($instance['image'], 'on'); ?> id="<?php echo $this->get_field_id('image'); ?>" name="<?php echo $this->get_field_name('image'); ?>" />
+		<label for="<?php echo $this->get_field_id( 'image' ); ?>"><?php _e( 'Show thumbnail', 'flatsome' ); ?></label></p>
+
+        <p><input class="checkbox" type="checkbox" <?php checked($instance['date-stamp'], 'on'); ?> id="<?php echo $this->get_field_id('date-stamp'); ?>" name="<?php echo $this->get_field_name('date-stamp'); ?>" />
+		<label for="<?php echo $this->get_field_id( 'date-stamp' ); ?>"><?php _e( 'Show date stamp on thumbnail', 'flatsome' ); ?></label>
+        <?php echo '<p><small>' . __('* If a featured image is not set or the "Show Thumbnail" option is disabled, the date stamp will always be displayed.', 'flatsome') . '</small></p>'; ?></p>
+
+<?php
+	}
+}
+
+?>
