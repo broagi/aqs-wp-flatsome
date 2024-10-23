@@ -21,13 +21,13 @@
 
 // ** MySQL settings ** //
 /** The name of the database for WordPress */
-define( 'DB_NAME', 'tamdous_aqsglobe' );
+define( 'DB_NAME', 'DB_NAME' );
 
 /** MySQL database username */
-define( 'DB_USER', 'tamdous_aqsglobe' );
+define( 'DB_USER', 'DB_USER' );
 
 /** MySQL database password */
-define( 'DB_PASSWORD', 'bL]^U;r~_5P_' );
+define( 'DB_PASSWORD', 'DB_PASSWORD' );
 
 /** MySQL hostname */
 define( 'DB_HOST', 'localhost' );
