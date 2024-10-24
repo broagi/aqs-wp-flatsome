@@ -4,7 +4,7 @@ Options -Indexes
 RewriteEngine On
 RewriteBase /
 RewriteCond %{SERVER_PORT} 80
-RewriteRule ^(.*)$ https://aqsglobe.com/$1 [R,L]
+# RewriteRule ^(.*)$ https://aqsglobe.com/$1 [R,L]
 RewriteRule ^index.php$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -30,3 +30,17 @@ php_value auto_prepend_file '/home/tamdous/aqsglobe.com/wordfence-waf.php'
 </Files>
 
 # END Wordfence WAF
+
+# BEGIN WordPress
+# Các nội dung nằm giữa "BEGIN WordPress" và "END WordPress" được tạo ra tự động, và chỉ nên được thay đổi thông qua các filter của WordPress. Mọi thay đổi tới thành phần này có thể sẽ bị mất và ghi đè.
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+
+# END WordPress
