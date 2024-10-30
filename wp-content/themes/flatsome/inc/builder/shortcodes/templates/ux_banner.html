@@ -3,7 +3,7 @@
              'has-parallax' :  shortcode.options.parallax, 'uxb-sticky-banner' : shortcode.options.sticky}"
   ng-style="{'padding-top' : (shortcode.options.height | heightCheck), 'background-color' : shortcode.options.bgColor}">
   <div class="banner-inner fill">
-    <div class="banner-bg fill"  data-parallax-container=".banner" data-parallax-background
+    <div class="banner-bg"  data-parallax-container=".banner" data-parallax-background
         ng-attr-data-parallax="-{{ shortcode.options.parallax }}" >
 
 	  <img ng-if="shortcode.options.bg" class="bg" ng-style="{ 'objectPosition': shortcode.options.bgPos }" wp-attachment="shortcode.options.bg" wp-attachment-size="shortcode.options.bgSize" alt="" />
@@ -41,7 +41,7 @@
       <ng-include ng-if="$ctrl.store.flatsomeUrl" src="$ctrl.store.flatsomeUrl + '/assets/img/dividers/' + shortcode.options.divider + '.svg'"></ng-include>
     </div>
 
-    <div class="banner-layers container">
+    <div class="banner-layers">
       <content></content>
     </div><!-- .banner-layers -->
 

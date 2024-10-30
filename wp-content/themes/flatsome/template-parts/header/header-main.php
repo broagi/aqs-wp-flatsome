@@ -13,19 +13,22 @@
             </ul>
           </div>
 
-          <!-- Left Elements -->
-          <div class="flex-col hide-for-medium flex-left
-            <?php if(get_theme_mod('logo_position', 'left') == 'left') echo 'flex-grow'; ?>">
-            <ul class="header-nav header-nav-main nav nav-left <?php flatsome_nav_classes('main'); ?>" >
-              <?php flatsome_header_elements('header_elements_left'); ?>
-            </ul>
-          </div>
-
           <!-- Right Elements -->
-          <div class="flex-col hide-for-medium flex-right">
+          <div class="flex-col hide-for-medium">
             <ul class="header-nav header-nav-main nav nav-right <?php flatsome_nav_classes('main'); ?>">
               <?php flatsome_header_elements('header_elements_right'); ?>
             </ul>
+           
+          </div>
+
+          <div class="flex-col hide-for-medium right-header">
+            
+            <?php
+              get_template_part('template-parts/header/partials/element', 'search');
+            ?>
+            <?php
+              get_template_part('template-parts/header/partials/element', 'languages');
+            ?>
           </div>
 
           <!-- Mobile Right Elements -->

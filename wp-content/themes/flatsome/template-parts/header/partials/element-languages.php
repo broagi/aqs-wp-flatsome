@@ -28,10 +28,8 @@ if ( function_exists( 'pll_the_languages' ) ) {
 ?>
 <li class="has-dropdown header-language-dropdown">
 	<a href="#">
-		<i class="fa fa-globe" aria-hidden="true"></i>
 		<?php echo $current_lang; ?>
 		<?php echo $flag; ?>
-<!-- 		<?php echo get_flatsome_icon( 'icon-angle-down' ); ?> -->
 	</a>
 	<ul class="nav-dropdown <?php flatsome_dropdown_classes(); ?>">
 		<?php
