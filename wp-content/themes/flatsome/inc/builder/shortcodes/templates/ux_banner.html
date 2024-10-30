@@ -3,7 +3,7 @@
              'has-parallax' :  shortcode.options.parallax, 'sticky-section' : shortcode.options.sticky}"
   ng-style="{'padding-top' : (shortcode.options.height | heightCheck), 'background-color' : shortcode.options.bgColor}">
   <div class="banner-inner fill">
-    <div class="banner-bg fill"  data-parallax-container=".banner" data-parallax-background
+    <div class="banner-bg"  data-parallax-container=".banner" data-parallax-background
         ng-attr-data-parallax="-{{ shortcode.options.parallax }}" >
       <div class="bg fill bg-fill" ng-style="{ 'backgroundPosition': shortcode.options.bgPos }" wp-attachment="shortcode.options.bg" wp-attachment-size="shortcode.options.bgSize"></div>
       <video ng-if="shortcode.options.videoMp4"
@@ -39,7 +39,7 @@
       <ng-include ng-if="$ctrl.store.flatsomeUrl" src="$ctrl.store.flatsomeUrl + '/assets/img/dividers/' + shortcode.options.divider + '.svg'"></ng-include>
     </div>
 
-    <div class="banner-layers container">
+    <div class="banner-layers">
       <content></content>
     </div><!-- .banner-layers -->
 
