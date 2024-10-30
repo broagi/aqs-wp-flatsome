@@ -1,11 +1,12 @@
 <?php
 // [blog_posts]
-function shortcode_latest_from_blog($atts, $content = null, $tag) {
+function shortcode_latest_from_blog($atts, $content = null, $tag = '' ) {
 
 	extract(shortcode_atts(array(
 		"_id" => 'row-'.rand(),
 		'style' => '',
 		'class' => '',
+		'visibility' => '',
 
 		// Layout
 		"columns" => '4',
@@ -22,11 +23,11 @@ function shortcode_latest_from_blog($atts, $content = null, $tag) {
 		'slider_nav_position' => '',
 		'slider_nav_color' => '',
 		'slider_bullets' => 'false',
-		'slider_arrows' => 'true',
+	 	'slider_arrows' => 'true',
 		'auto_slide' => 'false',
 		'infinitive' => 'true',
 		'depth' => '',
-		'depth_hover' => '',
+   		'depth_hover' => '',
 
 		// posts
 		'posts' => '8',
@@ -36,6 +37,9 @@ function shortcode_latest_from_blog($atts, $content = null, $tag) {
 		'excerpt' => 'visible',
 		'excerpt_length' => 15,
 		'offset' => '',
+		'orderby' => 'date',
+		'order' => 'DESC',
+		'tags' => '',
 
 		// Read more
 		'readmore' => '',
@@ -57,23 +61,26 @@ function shortcode_latest_from_blog($atts, $content = null, $tag) {
 		// Box styles
 		'animate' => '',
 		'text_pos' => 'bottom',
-		'text_padding' => '',
-		'text_bg' => '',
-		'text_size' => '',
-		'text_color' => '',
-		'text_hover' => '',
-		'text_align' => 'center',
-		'image_size' => 'medium',
-		'image_width' => '',
-		'image_radius' => '',
-		'image_height' => '56%',
-		'image_hover' => '',
-		'image_hover_alt' => '',
-		'image_overlay' => '',
-		'image_depth' => '',
-		'image_depth_hover' => '',
+	  	'text_padding' => '',
+	  	'text_bg' => '',
+	  	'text_size' => '',
+	 	'text_color' => '',
+	 	'text_hover' => '',
+	 	'text_align' => 'center',
+	 	'image_size' => 'medium',
+	 	'image_width' => '',
+	 	'image_radius' => '',
+	 	'image_height' => '56%',
+	    'image_hover' => '',
+	    'image_hover_alt' => '',
+	    'image_overlay' => '',
+	    'image_depth' => '',
+	    'image_depth_hover' => '',
 
 	), $atts));
+
+	// Stop if visibility is hidden
+  if($visibility == 'hidden') return;
 
 	ob_start();
 
@@ -82,19 +89,19 @@ function shortcode_latest_from_blog($atts, $content = null, $tag) {
 	$classes_text = array();
 
 	// Fix overlay color
-	if($style == 'text-overlay'){
-		$image_hover = 'zoom';
-	}
-	$style = str_replace('text-', '', $style);
+    if($style == 'text-overlay'){
+      $image_hover = 'zoom';
+    }
+    $style = str_replace('text-', '', $style);
 
 	// Fix grids
 	if($type == 'grid'){
-		if(!$text_pos) $text_pos = 'center';
-		$columns = 0;
-		$current_grid = 0;
-		$grid = flatsome_get_grid($grid);
-		$grid_total = count($grid);
-		flatsome_get_grid_height($grid_height, $_id);
+	  if(!$text_pos) $text_pos = 'center';
+	  $columns = 0;
+	  $current_grid = 0;
+	  $grid = flatsome_get_grid($grid);
+	  $grid_total = count($grid);
+	  flatsome_get_grid_height($grid_height, $_id);
 	}
 
 	// Fix overlay
@@ -118,18 +125,18 @@ function shortcode_latest_from_blog($atts, $content = null, $tag) {
 	if($text_color == 'dark') $classes_text[] = 'dark';
 
 	$css_args_img = array(
-		array( 'attribute' => 'border-radius', 'value' => $image_radius, 'unit' => '%' ),
-		array( 'attribute' => 'width', 'value' => $image_width, 'unit' => '%' ),
+	  array( 'attribute' => 'border-radius', 'value' => $image_radius, 'unit' => '%' ),
+	  array( 'attribute' => 'width', 'value' => $image_width, 'unit' => '%' ),
 	);
 
 	$css_image_height = array(
-		array( 'attribute' => 'padding-top', 'value' => $image_height),
-	);
+      array( 'attribute' => 'padding-top', 'value' => $image_height),
+  	);
 
 	$css_args = array(
-		array( 'attribute' => 'background-color', 'value' => $text_bg ),
-		array( 'attribute' => 'padding', 'value' => $text_padding ),
-	);
+      array( 'attribute' => 'background-color', 'value' => $text_bg ),
+      array( 'attribute' => 'padding', 'value' => $text_padding ),
+  	);
 
     // Add Animations
 	if($animate) {$animate = 'data-animate="'.$animate.'"';}
@@ -143,12 +150,14 @@ function shortcode_latest_from_blog($atts, $content = null, $tag) {
 	$repeater['tag'] = $tag;
 	$repeater['type'] = $type;
 	$repeater['class'] = $class;
+	$repeater['visibility'] = $visibility;
 	$repeater['style'] = $style;
 	$repeater['slider_style'] = $slider_nav_style;
 	$repeater['slider_nav_position'] = $slider_nav_position;
 	$repeater['slider_nav_color'] = $slider_nav_color;
 	$repeater['slider_bullets'] = $slider_bullets;
-	$repeater['auto_slide'] = $auto_slide;
+    $repeater['auto_slide'] = $auto_slide;
+	$repeater['infinitive'] = $infinitive;
 	$repeater['row_spacing'] = $col_spacing;
 	$repeater['row_width'] = $width;
 	$repeater['columns'] = $columns;
@@ -162,8 +171,11 @@ function shortcode_latest_from_blog($atts, $content = null, $tag) {
 		'post_type' => 'post',
 		'offset' => $offset,
 		'cat' => $cat,
+		'tag__in' => $tags ? array_filter( array_map( 'trim', explode( ',', $tags ) ) ) : '',
 		'posts_per_page' => $posts,
-		'ignore_sticky_posts' => true
+		'ignore_sticky_posts' => true,
+		'orderby'             => $orderby,
+		'order'               => $order,
 	);
 
 	// Added for Flatsome v2 fallback
@@ -178,8 +190,8 @@ function shortcode_latest_from_blog($atts, $content = null, $tag) {
 
 		$args = array(
 			'post__in' => $ids,
-			'post_type' => array(
-				'post',
+            'post_type' => array(
+                'post',
                 'featured_item', // Include for its tag archive listing.
             ),
 			'numberposts' => -1,
@@ -187,79 +199,131 @@ function shortcode_latest_from_blog($atts, $content = null, $tag) {
 			'posts_per_page' => 9999,
 			'ignore_sticky_posts' => true,
 		);
+
+		// Include for search archive listing.
+		if ( is_search() ) {
+			$args['post_type'][] = 'page';
+		}
 	}
 
-	$recentPosts = new WP_Query( $args );
+$recentPosts = new WP_Query( $args );
 
 // Get repeater HTML.
-	get_flatsome_repeater_start($repeater);
+get_flatsome_repeater_start($repeater);
 
-	while ( $recentPosts->have_posts() ) : $recentPosts->the_post();
+while ( $recentPosts->have_posts() ) : $recentPosts->the_post();
 
-		$col_class = array('post-item');
+			$col_class    = array( 'post-item' );
+			$show_excerpt = $excerpt;
 
-		if(get_post_format() == 'video') $col_class[] = 'has-post-icon';
+			if(get_post_format() == 'video') $col_class[] = 'has-post-icon';
 
-		if($type == 'grid'){
-			if($grid_total > $current_grid) $current_grid++;
-			$current = $current_grid-1;
+			if($type == 'grid'){
+	        if($grid_total > $current_grid) $current_grid++;
+	        $current = $current_grid-1;
 
-			$col_class[] = 'grid-col';
-			if($grid[$current]['height']) $col_class[] = 'grid-col-'.$grid[$current]['height'];
+	        $col_class[] = 'grid-col';
+	        if($grid[$current]['height']) $col_class[] = 'grid-col-'.$grid[$current]['height'];
 
-			if($grid[$current]['span']) $col_class[] = 'large-'.$grid[$current]['span'];
-			if($grid[$current]['md']) $col_class[] = 'medium-'.$grid[$current]['md'];
+	        if($grid[$current]['span']) $col_class[] = 'large-'.$grid[$current]['span'];
+	        if($grid[$current]['md']) $col_class[] = 'medium-'.$grid[$current]['md'];
 
 	        // Set image size
-			if($grid[$current]['size']) $image_size = $grid[$current]['size'];
+	        if($grid[$current]['size']) $image_size = $grid[$current]['size'];
 
 	        // Hide excerpt for small sizes
-			if($grid[$current]['size'] == 'thumbnail') $excerpt = 'false';
-		}
+	        if($grid[$current]['size'] == 'thumbnail') $show_excerpt = 'false';
+	    }
 
-		?>
-		<div class="col <?php echo implode(' ', $col_class); ?>" <?php echo $animate;?>>
+		?><div class="col <?php echo implode(' ', $col_class); ?>" <?php echo $animate;?>>
 			<div class="col-inner">
-				<a href="<?php the_permalink() ?>" class="plain">
-					<div class="other-news clearfix">  
-						<div class="other-news clearfix">  
-							<div class="inner-content">  
-								<div class="post-thumbnail tie-appear">  
-									<a href="<?php the_permalink() ?>"><img src="<?php the_post_thumbnail_url(); ?>"></a>   
-								</div>
-								<div class="entry-in-post">
-									<span class="post-box-time">
-										<?php
-                                            $postdate = get_field('ngay_dang');
-                                            if($postdate[0] != 1){
-                                        ?>
-                                    	    <i class="fa fa-clock-o" aria-hidden="true"></i><?php the_time('d/m/Y'); ?>
-                                        <?php } ?>
-									</span>       
-									<h2 class="post-box-title">
-										<a href="<?php the_permalink() ?>"><?php the_title(); ?></a>
-									</h2>   
-									<div class="entry">
-										<p><?php
-										echo wp_trim_words( get_the_content(), 6, '...' );
-										?></p>
-									</div>  
-								</div>  
-							</div>   
-						</div>
+				<div class="box <?php echo $classes_box; ?> box-blog-post has-hover">
+          <?php if(has_post_thumbnail()) { ?>
+  					<div class="box-image" <?php echo get_shortcode_inline_css($css_args_img); ?>>
+  						<div class="<?php echo $classes_image; ?>" <?php echo get_shortcode_inline_css($css_image_height); ?>>
+							<a href="<?php the_permalink() ?>" class="plain" aria-label="<?php echo esc_attr( the_title() ); ?>">
+								<?php the_post_thumbnail( $image_size ); ?>
+							</a>
+  							<?php if($image_overlay){ ?><div class="overlay" style="background-color: <?php echo $image_overlay;?>"></div><?php } ?>
+  							<?php if($style == 'shade'){ ?><div class="shade"></div><?php } ?>
+  						</div>
+  						<?php if($post_icon && get_post_format()) { ?>
+  							<div class="absolute no-click x50 y50 md-x50 md-y50 lg-x50 lg-y50">
+  				            	<div class="overlay-icon">
+  				                    <i class="icon-play"></i>
+  				                </div>
+  				            </div>
+  						<?php } ?>
+  					</div>
+          <?php } ?>
+					<div class="box-text <?php echo $classes_text; ?>" <?php echo get_shortcode_inline_css($css_args); ?>>
+					<div class="box-text-inner blog-post-inner">
+
+					<?php do_action('flatsome_blog_post_before'); ?>
+
+					<?php if($show_category !== 'false') { ?>
+						<p class="cat-label <?php if($show_category == 'label') echo 'tag-label'; ?> is-xxsmall op-7 uppercase">
+					<?php
+						foreach((get_the_category()) as $cat) {
+						echo $cat->cat_name . ' ';
+					}
+					?>
+					</p>
+					<?php } ?>
+					<h5 class="post-title is-<?php echo $title_size; ?> <?php echo $title_style;?>">
+						<a href="<?php the_permalink() ?>" class="plain"><?php the_title(); ?></a>
+					</h5>
+					<?php if((!has_post_thumbnail() && $show_date !== 'false') || $show_date == 'text') {?><div class="post-meta is-small op-8"><?php echo get_the_date(); ?></div><?php } ?>
+					<div class="is-divider"></div>
+					<?php if($show_excerpt !== 'false') { ?>
+					<p class="from_the_blog_excerpt <?php if($show_excerpt !== 'visible'){ echo 'show-on-hover hover-'.$show_excerpt; } ?>"><?php
+					  $the_excerpt  = get_the_excerpt();
+					  $excerpt_more = apply_filters( 'excerpt_more', ' [...]' );
+					  echo flatsome_string_limit_words($the_excerpt, $excerpt_length) . $excerpt_more;
+					?>
+					</p>
+					<?php } ?>
+                    <?php if ( $comments == 'true' && comments_open() && '0' != get_comments_number() ) { ?>
+                        <p class="from_the_blog_comments uppercase is-xsmall">
+                            <?php
+                                $comments_number = get_comments_number( get_the_ID() );
+                            	/* translators: %s: Comment count */
+                                printf( _n( '%s Comment', '%s Comments', $comments_number, 'flatsome' ),
+                                    number_format_i18n( $comments_number ) )
+                            ?>
+                        </p>
+                    <?php } ?>
+
+					<?php if($readmore) { ?>
+						<a href="<?php echo get_the_permalink(); ?>" class="button <?php echo $readmore_color; ?> is-<?php echo $readmore_style; ?> is-<?php echo $readmore_size; ?> mb-0">
+							<?php echo $readmore ;?>
+						</a>
+					<?php } ?>
+
+					<?php do_action('flatsome_blog_post_after'); ?>
+
 					</div>
-				</a><!-- .link -->
-			</div><!-- .col-inner -->
-		</div><!-- .col -->
-	<?php endwhile;
-	wp_reset_query();
+					</div>
+					<?php if(has_post_thumbnail() && ($show_date == 'badge' || $show_date == 'true')) {?>
+					<?php if(!$badge_style) $badge_style = get_theme_mod('blog_badge_style', 'outline'); ?>
+						<div class="badge absolute top post-date badge-<?php echo $badge_style; ?>">
+							<div class="badge-inner">
+								<span class="post-date-day"><?php echo get_the_time('d', get_the_ID()); ?></span><br>
+								<span class="post-date-month is-xsmall"><?php echo get_the_time('M', get_the_ID()); ?></span>
+							</div>
+						</div>
+					<?php } ?>
+				</div>
+			</div>
+		</div><?php endwhile;
+wp_reset_query();
 
 // Get repeater end.
-	get_flatsome_repeater_end($atts);
+get_flatsome_repeater_end($atts);
 
-	$content = ob_get_contents();
-	ob_end_clean();
-	return $content;
+$content = ob_get_contents();
+ob_end_clean();
+return $content;
 }
 
 add_shortcode("blog_posts", "shortcode_latest_from_blog");

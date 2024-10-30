@@ -9,7 +9,7 @@ add_ux_builder_shortcode( 'col_grid', array(
     'tools' => 'shortcodes/col/col-tools.directive.html',
     'info' => '{{ span }}/12',
     'require' => array( 'row' ),
-    'allow' => array( 'ux_banner','ux_slider','ux_image'),
+    'allow' => array( 'ux_banner','ux_slider','ux_image', 'ux_lottie'),
     'resize' => array( 'right', 'bottom' ),
     'scroll_to' => false,
     'wrap'   => false,
@@ -61,12 +61,6 @@ add_ux_builder_shortcode( 'col_grid', array(
             'options' => require( __DIR__ . '/values/animate.php' ),
         ),
 
-        'class' => array(
-            'type' => 'textfield',
-            'heading' => 'Class',
-            'default' => '',
-        ),
-
         'depth' => array(
             'type' => 'slider',
             'vertical' => true,
@@ -84,5 +78,6 @@ add_ux_builder_shortcode( 'col_grid', array(
             'max' => 5,
             'min' => 0,
         ),
+        'advanced_options' => require( __DIR__ . '/commons/advanced.php'),
     ),
 ) );

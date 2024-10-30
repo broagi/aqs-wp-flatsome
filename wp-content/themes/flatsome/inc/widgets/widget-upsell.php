@@ -17,7 +17,7 @@ class Upsell_Widget extends WP_Widget {
 		parent::__construct(
 	 		'upsell_widget', // Base ID
 			'Flatsome Upsell Products', // Name
-			array( 'description' => __( 'Add upsell products to product page', 'flatsome' ), ) // Args
+			array( 'description' => __( 'Add upsell products to product pages.', 'flatsome' ), ) // Args
 		);
 	}
 
@@ -30,12 +30,12 @@ class Upsell_Widget extends WP_Widget {
 	 * @param array $instance Saved values from database.
 	 */
 	public function widget( $args, $instance ) {
-		global $product, $woocommerce, $woocommerce_loop;
+		global $product;
 
 		/* Disable if not on product page */
 		if(!function_exists('is_product') || !is_product()) return;
 
-    $upsells = fl_woocommerce_version_check('3.0.0') ?  $product->get_upsell_ids() :  $product->get_upsells();
+        $upsells = $product->get_upsell_ids();
 
 		if ( sizeof( $upsells ) == 0 ) return;
 
@@ -48,7 +48,7 @@ class Upsell_Widget extends WP_Widget {
 			$title = __( 'Complete the look', 'flatsome' );
 		}
 
-		$meta_query = $woocommerce->query->get_meta_query();
+		$meta_query = WC()->query->get_meta_query();
 
 		$args = array(
 			'post_type'           => 'product',
@@ -117,7 +117,7 @@ class Upsell_Widget extends WP_Widget {
 		}
 		?>
 		<p>
-			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title','wordpress'); ?></label>
+			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title','flatsome'); ?>:</label>
 			<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
 		</p>
 		<?php

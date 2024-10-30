@@ -1,10 +1,12 @@
 <?php
 
-// Remove recent comments style
+/**
+ * Remove recent comments style
+ */
 function flatsome_remove_recent_comments_style() {
-        global $wp_widget_factory;
-        remove_action( 'wp_head', array( $wp_widget_factory->widgets['WP_Widget_Recent_Comments'], 'recent_comments_style' ) );
-    }
+	add_filter( 'show_recent_comments_widget_style', '__return_false' );
+}
+
 add_action( 'widgets_init', 'flatsome_remove_recent_comments_style' );
 
 /**
@@ -17,52 +19,52 @@ add_filter( 'excerpt_more', 'flatsome_excerpt_suffix' );
 
 
 // Blog Article Classes
-function flatsome_blog_article_classes(){
-    $classes = array();
-    if(flatsome_option('blog_posts_depth')) $classes[] = 'has-shadow box-shadow-'.flatsome_option('blog_posts_depth');
-    if(flatsome_option('blog_posts_depth_hover'))  $classes[] = 'box-shadow-'.flatsome_option('blog_posts_depth_hover').'-hover';
-    if(!empty($classes)) echo implode(' ', $classes);
+function flatsome_blog_article_classes() {
+	$classes = array();
+	if ( get_theme_mod( 'blog_posts_depth', 0 ) ) $classes[]       = 'has-shadow box-shadow-' . get_theme_mod( 'blog_posts_depth', 0 );
+	if ( get_theme_mod( 'blog_posts_depth_hover', 0 ) ) $classes[] = 'box-shadow-' . get_theme_mod( 'blog_posts_depth_hover', 0 ) . '-hover';
+	if ( ! empty( $classes ) ) echo implode( ' ', $classes );
 }
 
 // Add Custom Blog Header
-function flatsome_custom_blog_header(){
-	if(flatsome_option('blog_header') && is_home()){
-		echo '<div class="blog-header-wrapper">'.do_shortcode(flatsome_option('blog_header')).'</div>';
+function flatsome_custom_blog_header() {
+	if ( get_theme_mod( 'blog_header' ) && is_home() ) {
+		echo '<div class="blog-header-wrapper">' . do_shortcode( get_theme_mod( 'blog_header' ) ) . '</div>';
 	}
 }
-add_action('flatsome_after_header','flatsome_custom_blog_header', 10);
+add_action( 'flatsome_after_header', 'flatsome_custom_blog_header', 10 );
 
 // Add transparent headers
-function flatsome_blog_header_classes($classes){
-    // Add transparent header to product page if set.
-    if(is_singular('post') && flatsome_option('blog_single_transparent')){
-        $classes[] = 'transparent has-transparent nav-dark toggle-nav-dark';
-    }
-    if(flatsome_option('blog_archive_transparent') && is_home()){
-        $classes[] = 'transparent has-transparent nav-dark toggle-nav-dark';
-    }
-    return $classes;
+function flatsome_blog_header_classes( $classes ) {
+	// Add transparent header to product page if set.
+	if ( is_singular( 'post' ) && get_theme_mod( 'blog_single_transparent', 0 ) ) {
+		$classes[] = 'transparent has-transparent nav-dark toggle-nav-dark';
+	}
+	if ( get_theme_mod( 'blog_archive_transparent', 0 ) && is_home() ) {
+		$classes[] = 'transparent has-transparent nav-dark toggle-nav-dark';
+	}
+	return $classes;
 }
 
-add_filter('flatsome_header_class','flatsome_blog_header_classes', 10);
+add_filter( 'flatsome_header_class', 'flatsome_blog_header_classes', 10 );
 
 
 // Add Big blog header
 function flatsome_single_page_header(){
   if(is_singular('post') && get_theme_mod('blog_post_style') == 'top'){
-		echo get_template_part( 'template-parts/posts/partials/single-featured', get_theme_mod('blog_post_style'));
+	   get_template_part( 'template-parts/posts/partials/single-featured', get_theme_mod('blog_post_style'));
 	}
 }
 add_action('flatsome_after_header','flatsome_single_page_header', 10);
 
 
 // Add Blog Archive title
-function flatsome_archive_title(){
-    if(flatsome_option('blog_archive_title') && (is_archive() || is_search())){
-        echo get_template_part( 'template-parts/posts/partials/archive-title');
-    }
+function flatsome_archive_title() {
+	if ( get_theme_mod( 'blog_archive_title', 1 ) && ( is_archive() || is_search() ) ) {
+		get_template_part( 'template-parts/posts/partials/archive-title' );
+	}
 }
-add_action('flatsome_before_blog','flatsome_archive_title', 15);
+add_action( 'flatsome_before_blog', 'flatsome_archive_title', 15 );
 
 
 // Remove the Auto scrolling if a Read more link is clicked
@@ -143,7 +145,7 @@ function flatsome_content_nav( $nav_id ) {
 		 <?php endif; ?>		</div>
 	</div>
 	<?php endif; ?>
-    </nav><!-- #<?php echo esc_html( $nav_id ); ?> -->
+    </nav>
 
     <?php
 }
@@ -176,7 +178,7 @@ function flatsome_comment( $comment, $args, $depth ) {
                     <div class="comment-author mr-half">
                         <?php echo get_avatar( $comment, 70 ); ?>
                     </div>
-                </div><!-- .large-3 -->
+                </div>
 
                 <div class="flex-col flex-grow">
                     <?php printf( __( '%s <span class="says">says:</span>', 'flatsome' ), sprintf( '<cite class="strong fn">%s</cite>', get_comment_author_link() ) ); ?>
@@ -201,14 +203,12 @@ function flatsome_comment( $comment, $args, $depth ) {
                                     'max_depth' => $args['max_depth'],
                                 ) ) );
                             ?>
-                        </div><!-- .reply -->
-                </div><!-- .comment-meta .commentmetadata -->
+                        </div>
+                </div>
 
-                </div><!-- .flex-col -->
-            </div><!-- .flex-row -->
+                </div>
+            </div>
 		</article>
-    <!-- #comment -->
-
 	<?php
 			break;
 	endswitch;
@@ -217,45 +217,36 @@ endif; // ends check for flatsome_comment()
 
 if ( ! function_exists( 'flatsome_posted_on' ) ) :
 
-// Prints HTML with meta information for the current post-date/time and author.
-function flatsome_posted_on() {
-    $time_string = '<time class="entry-date published updated" datetime="%1$s">%2$s</time>';
-    if ( get_the_time( 'U' ) !== get_the_modified_time( 'U' ) ) {
-        $time_string = '<time class="entry-date published" datetime="%1$s">%2$s</time><time class="updated" datetime="%3$s">%4$s</time>';
-    }
+	// Prints HTML with meta information for the current post-date/time and author.
+	function flatsome_posted_on() {
+		$time_string = '<time class="entry-date published updated" datetime="%1$s">%2$s</time>';
+		if ( get_the_time( 'U' ) !== get_the_modified_time( 'U' ) ) {
+			$time_string = '<time class="entry-date published" datetime="%1$s">%2$s</time><time class="updated" datetime="%3$s">%4$s</time>';
+		}
 
-    $time_string = sprintf( $time_string,
-        esc_attr( get_the_date( 'c' ) ),
-        esc_html( get_the_date() ),
-        esc_attr( get_the_modified_date( 'c' ) ),
-        esc_html( get_the_modified_date() )
-    );
+		$time_string = sprintf( $time_string,
+			esc_attr( get_the_date( 'c' ) ),
+			esc_html( get_the_date() ),
+			esc_attr( get_the_modified_date( 'c' ) ),
+			esc_html( get_the_modified_date() )
+		);
 
-    $posted_on = sprintf(
-        esc_html_x( 'Posted on %s', 'post date', 'flatsome' ),
-        '<a href="' . esc_url( get_permalink() ) . '" rel="bookmark">' . $time_string . '</a>'
-    );
-
-    $byline = sprintf(
-        esc_html_x( 'by %s', 'post author', 'flatsome' ),
-        '<span class="meta-author vcard"><a class="url fn n" href="' . esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ) . '">' . esc_html( get_the_author() ) . '</a></span>'
-    );
-
-    echo '<span class="posted-on">' . $posted_on . '</span><span class="byline"> ' . $byline . '</span>';
-
-}
+		echo sprintf(
+			/* translators: %1$s: post date, %2$s: post author */
+			wp_kses_post( _x( '<span class="posted-on">Posted on %1$s</span> <span class="byline">by %2$s</span>', 'post date by post author', 'flatsome' ) ),
+			'<a href="' . esc_url( get_permalink() ) . '" rel="bookmark">' . $time_string . '</a>', // phpcs:ignore WordPress.Security.EscapeOutput
+			'<span class="meta-author vcard"><a class="url fn n" href="' . esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ) . '">' . esc_html( get_the_author() ) . '</a></span>'
+		);
+	}
 endif;
 
-
 function flatsome_featured_sticky_posts( $query ) {
-    if (flatsome_option('blog_featured') && $query->is_home() && $query->is_main_query()) {
-        $query->set( 'ignore_sticky_posts', 1);
-        if(flatsome_option('blog_hide_sticky')){ $query->set( 'post__not_in', get_option( 'sticky_posts' ) );}
-     }
+	if ( get_theme_mod( 'blog_featured', '' ) && $query->is_home() && $query->is_main_query() ) {
+		$query->set( 'ignore_sticky_posts', 1 );
+		if ( get_theme_mod( 'blog_hide_sticky', 0 ) ) $query->set( 'post__not_in', get_option( 'sticky_posts' ) );
+	}
 }
 add_action( 'pre_get_posts', 'flatsome_featured_sticky_posts' );
-
-
 
 
 // Filter in a link to a content ID attribute for the next/previous image links on image attachment pages

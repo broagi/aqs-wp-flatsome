@@ -4,7 +4,19 @@ if ( ! isset( $content_width ) ) {
 	$content_width = 1020; // Pixels.
 }
 
+/**
+ * Initialized Envato and Flatsome Account implementation.
+ */
+flatsome_envato();
 
+/**
+ * Only load styles for used blocks.
+ */
+add_filter( 'should_load_separate_core_block_assets', '__return_true' );
+
+/**
+ * Setup Flatsome.
+ */
 function flatsome_setup() {
 
 	/* add woocommerce support */
@@ -52,13 +64,18 @@ function flatsome_setup() {
 	register_nav_menus( array(
 		'primary'        => __( 'Main Menu', 'flatsome' ),
 		'primary_mobile' => __( 'Main Menu - Mobile', 'flatsome' ),
+		'secondary'      => __( 'Secondary Menu', 'flatsome' ),
 		'footer'         => __( 'Footer Menu', 'flatsome' ),
 		'top_bar_nav'    => __( 'Top Bar Menu', 'flatsome' ),
 		'my_account'     => __( 'My Account Menu', 'flatsome' ),
+		'vertical'       => __( 'Vertical Menu', 'flatsome' ),
 	) );
 
 	/*  Enable support for Post Formats */
 	add_theme_support( 'post-formats', array( 'video' ) );
+
+	// Disable widgets-block-editor for now.
+	remove_theme_support( 'widgets-block-editor' );
 }
 
 add_action( 'after_setup_theme', 'flatsome_setup' );
@@ -115,39 +132,35 @@ function flatsome_scripts() {
 	$version = $theme->get( 'Version' );
 
 	// Styles.
-	if ( ! is_rtl() ) {
-		wp_enqueue_style( 'flatsome-main', $uri . '/assets/css/flatsome.css', array(), $version, 'all' );
-	} else {
-		wp_enqueue_style( 'flatsome-main-rtl', $uri . '/assets/css/flatsome-rtl.css', array(), $version, 'all' );
-	}
+	wp_enqueue_style( 'flatsome-main', $uri . '/assets/css/flatsome.css', array(), $version, 'all' );
+	wp_style_add_data( 'flatsome-main', 'rtl', 'replace' );
 
-	if ( is_woocommerce_activated() && ! is_rtl() ) {
+
+	if ( is_woocommerce_activated() ) {
 		wp_enqueue_style( 'flatsome-shop', $uri . '/assets/css/flatsome-shop.css', array(), $version, 'all' );
-	} elseif ( is_woocommerce_activated() ) {
-		wp_enqueue_style( 'flatsome-shop-rtl', $uri . '/assets/css/flatsome-shop-rtl.css', array(), $version, 'all' );
+		wp_style_add_data( 'flatsome-shop', 'rtl', 'replace' );
 	}
 
 	// Load current theme styles.css file.
-	wp_enqueue_style( 'flatsome-style', get_stylesheet_uri(), array(), wp_get_theme()->get( 'Version' ), 'all' );
+	if ( ! get_theme_mod( 'flatsome_disable_style_css', 0 ) ) {
+		wp_enqueue_style( 'flatsome-style', get_stylesheet_uri(), array(), wp_get_theme()->get( 'Version' ), 'all' );
+	}
 
 	// Register styles (Loaded on request).
 	wp_register_style( 'flatsome-effects', $uri . '/assets/css/effects.css', array(), $version, 'all' );
 
 	// Register scripts (Loaded on request).
 	wp_register_script( 'flatsome-masonry-js', $uri . '/assets/libs/packery.pkgd.min.js', array( 'jquery' ), $version, true );
-	wp_register_script( 'flatsome-isotope-js', $uri . '/assets/libs/isotope.pkgd.min.js', array( 'jquery' ), $version, true );
+	wp_register_script( 'flatsome-isotope-js', $uri . '/assets/libs/isotope.pkgd.min.js', array( 'jquery', 'flatsome-js' ), $version, true );
 
 	// Google maps.
-	$maps_api = get_theme_mod( 'google_map_api' );
+	$maps_api = trim( get_theme_mod( 'google_map_api' ) );
 	if ( ! empty( $maps_api ) ) {
-		wp_register_script( 'flatsome-maps', '//maps.googleapis.com/maps/api/js?key=' . $maps_api, array( 'jquery' ), $version, true );
+		wp_register_script( 'flatsome-maps', "//maps.googleapis.com/maps/api/js?key=$maps_api&callback=jQuery.noop", array( 'jquery' ), $version, true );
 	}
 
 	// Enqueue theme scripts.
-	wp_enqueue_script( 'flatsome-js', $uri . '/assets/js/flatsome.js', array(
-		'jquery',
-		'hoverIntent',
-	), $version, true );
+	flatsome_enqueue_asset( 'flatsome-js', 'flatsome', array( 'jquery', 'hoverIntent' ) );
 
 	$sticky_height = get_theme_mod( 'header_height_sticky', 70 );
 
@@ -155,24 +168,67 @@ function flatsome_scripts() {
 		$sticky_height = $sticky_height + 30;
 	}
 
-	// Add variables to scripts.
-	wp_localize_script( 'flatsome-js', 'flatsomeVars', array(
-		'ajaxurl'       => admin_url( 'admin-ajax.php' ),
-		'rtl'           => is_rtl(),
-		'sticky_height' => $sticky_height,
-		'user'          => array(
-			'can_edit_pages' => current_user_can( 'edit_pages'
-			),
+	$lightbox_close_markup = apply_filters('flatsome_lightbox_close_button', '<button title="%title%" type="button" class="mfp-close"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>');
+
+	$localize_data = array(
+		'theme'              => array( 'version' => $version ),
+		'ajaxurl'            => admin_url( 'admin-ajax.php' ),
+		'rtl'                => is_rtl(),
+		'sticky_height'      => $sticky_height, // Deprecated.
+		'stickyHeaderHeight' => 0,
+		'scrollPaddingTop'   => 0,
+		'assets_url'         => $uri . '/assets/',
+		'lightbox'           => array(
+			'close_markup'     => $lightbox_close_markup,
+			'close_btn_inside' => apply_filters( 'flatsome_lightbox_close_btn_inside', false ),
 		),
-	) );
+		'user'               => array(
+			'can_edit_pages' => current_user_can( 'edit_pages' ),
+		),
+		'i18n'               => array(
+			'mainMenu'     => __( 'Main Menu', 'flatsome' ),
+			'toggleButton' => __( 'Toggle', 'flatsome' ),
+		),
+		'options'            => array(
+			'cookie_notice_version'          => get_theme_mod( 'cookie_notice_version', '1' ),
+			'swatches_layout'                => get_theme_mod( 'swatches_layout' ),
+			'swatches_box_select_event'      => get_theme_mod( 'swatches_box_select_event' ),
+			'swatches_box_behavior_selected' => get_theme_mod( 'swatches_box_behavior_selected' ),
+			'swatches_box_update_urls'       => get_theme_mod( 'swatches_box_update_urls', '1' ),
+			'swatches_box_reset'             => get_theme_mod( 'swatches_box_reset' ),
+			'swatches_box_reset_limited'     => get_theme_mod( 'swatches_box_reset_limited' ),
+			'swatches_box_reset_extent'      => get_theme_mod( 'swatches_box_reset_extent' ),
+			'swatches_box_reset_time'        => get_theme_mod( 'swatches_box_reset_time', 300 ),
+			'search_result_latency'          => get_theme_mod( 'search_result_latency', '0' ),
+		),
+	);
 
 	if ( is_woocommerce_activated() ) {
-		wp_enqueue_script( 'flatsome-theme-woocommerce-js', $uri . '/assets/js/woocommerce.js', array( 'flatsome-js' ), $version, true );
+		$wc_localize_data = array(
+			'is_mini_cart_reveal' => flatsome_is_mini_cart_reveal(),
+		);
+
+		$localize_data = array_merge( $localize_data, $wc_localize_data );
+	}
+
+	// Add variables to scripts.
+	wp_localize_script( 'flatsome-js', 'flatsomeVars', $localize_data );
+
+	if ( is_woocommerce_activated() ) {
+		flatsome_enqueue_asset( 'flatsome-theme-woocommerce-js', 'woocommerce', array( 'flatsome-js', 'woocommerce' ) );
 	}
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
+
+	// Custom Properties polyfill for Internet Explorer.
+	wp_register_script( 'css-vars-polyfill', 'https://cdn.jsdelivr.net/gh/nuxodin/ie11CustomProperties@4.0.1/ie11CustomProperties.min.js', array(), '4.0.1', true );
+	wp_script_add_data( 'css-vars-polyfill', 'conditional', 'IE' );
+
+	// IntersectionObserver polyfill for IE.
+	wp_enqueue_script( 'intersection-observer-polyfill', 'https://cdn.jsdelivr.net/npm/intersection-observer-polyfill@0.1.0/dist/IntersectionObserver.js', array(), '0.1.0', true );
+	wp_script_add_data( 'intersection-observer-polyfill', 'conditional', 'IE' );
 }
 
 add_action( 'wp_enqueue_scripts', 'flatsome_scripts', 100 );
@@ -201,15 +257,15 @@ function flatsome_ux_builder_scripts( $context ) {
 
 	// Add UxBuilder assets.
 	if ( $context == 'editor' ) {
-		wp_enqueue_script( 'ux-builder-flatsome', $uri . '/assets/js/builder/custom/editor.js', null, $version, true );
-		wp_enqueue_style( 'ux-builder-flatsome', $uri . '/assets/css/builder/custom/builder.css', null, $version );
+		flatsome_enqueue_asset( 'ux-builder-flatsome', 'builder/custom/editor', array( 'ux-builder-core' ) );
+		wp_enqueue_style( 'ux-builder-flatsome', $uri . '/assets/css/builder/custom/builder.css', array( 'ux-builder-core' ), $version );
 	}
 	if ( $context == 'content' ) {
 		wp_enqueue_style( 'ux-builder-flatsome', $uri . '/assets/css/builder/custom/builder.css', null, $version );
-		wp_enqueue_script( 'ux-builder-flatsome', $uri . '/assets/js/builder/custom/content.js', array(
+		flatsome_enqueue_asset( 'ux-builder-flatsome', 'builder/custom/content', array(
 			'flatsome-js',
 			'flatsome-masonry-js',
-		), $version, true );
+		) );
 	}
 }
 
@@ -226,3 +282,93 @@ if ( ! is_admin() && get_theme_mod( 'lazy_load_backgrounds', 1 ) ) {
 
 	add_filter( 'wp_head', 'flatsome_lazy_load_backgrounds_css' );
 }
+
+/**
+ * Remove jQuery migrate.
+ *
+ * @param WP_Scripts $scripts WP_Scripts object.
+ */
+function flatsome_remove_jquery_migrate( $scripts ) {
+	if ( ! get_theme_mod( 'jquery_migrate' ) ) return;
+	if ( ! is_admin() && isset( $scripts->registered['jquery'] ) ) {
+		$script = $scripts->registered['jquery'];
+
+		if ( $script->deps ) { // Check whether the script has any dependencies.
+			$script->deps = array_diff( $script->deps, array(
+				'jquery-migrate',
+			) );
+		}
+	}
+}
+
+add_action( 'wp_default_scripts', 'flatsome_remove_jquery_migrate' );
+
+// Disable emoji scripts
+if ( ! is_admin() && get_theme_mod( 'disable_emoji', 0 ) ) {
+	remove_action('wp_head', 'print_emoji_detection_script', 7);
+	remove_action('wp_print_styles', 'print_emoji_styles');
+}
+
+function flatsome_deregister_block_styles() {
+	if ( ! is_admin() && get_theme_mod( 'disable_blockcss', 0 ) ) {
+    wp_dequeue_style( 'wp-block-library' );
+  }
+}
+add_action( 'wp_print_styles', 'flatsome_deregister_block_styles', 100 );
+
+/**
+ * Prefetch lazy-loaded chunks.
+ */
+function flatsome_prefetch_scripts( $urls, $type ) {
+	static $manifest;
+
+	$manifest_path = get_template_directory() . '/assets/manifest.json';
+	$assets_url    = get_template_directory_uri() . '/assets';
+	$theme         = wp_get_theme( get_template() );
+	$version       = $theme->get( 'Version' );
+
+	if ( empty( $manifest ) ) {
+		if ( ! file_exists( $manifest_path ) ) {
+			return $urls;
+		}
+		$manifest = wp_json_file_decode( $manifest_path, [ 'associative' => true ] );
+	}
+
+	$asset_handle_map = array(
+		'js/flatsome'    => 'flatsome-js',
+		'js/woocommerce' => 'flatsome-theme-woocommerce-js',
+	);
+
+	foreach ( $manifest as $key => $asset ) {
+		if ( empty( $asset_handle_map[ $key ] ) ) continue;
+
+		$handle = $asset_handle_map[ $key ];
+
+		if ( wp_script_is( $handle, 'enqueued' ) ) {
+			if ( $type === 'prefetch' ) {
+				$script = wp_scripts()->registered[ $handle ];
+				$urls[] = add_query_arg( 'ver', $script->ver, $script->src );
+			}
+			if ( ! empty( $asset[ $type ]['js'] ) ) {
+				foreach ( $asset[ $type ]['js'] as $path ) {
+					$urls[] = $assets_url . "/$path?ver=" . $version;
+				}
+			}
+		}
+	}
+	return $urls;
+}
+add_filter( 'wp_resource_hints', 'flatsome_prefetch_scripts', 10, 2 );
+
+/**
+ * Add JSON to allowed file types.
+ *
+ * @param array $mimes Allowed file types.
+ */
+function flatsome_upload_mimes( $mimes ) {
+	if ( ! isset( $mimes['json'] ) ) {
+		$mimes['json'] = 'text/plain';
+	}
+	return $mimes;
+}
+add_filter( 'upload_mimes', 'flatsome_upload_mimes' );

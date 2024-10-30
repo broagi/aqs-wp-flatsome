@@ -6,6 +6,7 @@ function shortcode_ux_slider($atts, $content=null) {
         'timer' => '6000',
         'bullets' => 'true',
         'visibility' => '',
+        'class' => '',
         'type' => 'slide',
         'bullet_style' => '',
         'auto_slide' => 'true',
@@ -14,6 +15,8 @@ function shortcode_ux_slider($atts, $content=null) {
         'slide_align' => 'center',
         'style' => 'normal',
         'slide_width' => '',
+        'slide_width__md' => null,
+        'slide_width__sm' => null,
         'arrows' => 'true',
         'pause_hover' => 'true',
         'hide_nav' => '',
@@ -25,6 +28,8 @@ function shortcode_ux_slider($atts, $content=null) {
         'freescroll' => 'false',
         'parallax' => '0',
         'margin' => '',
+        'margin__md' => '',
+        'margin__sm' => '',
         'columns' => '1',
         'height' => '',
         'rtl' => 'false',
@@ -40,15 +45,18 @@ function shortcode_ux_slider($atts, $content=null) {
 
     // Stop if visibility is hidden
     if($visibility == 'hidden') return;
+    if($mobile !==  'true' && !$visibility) {$visibility = 'hide-for-small';}
 
     ob_start();
+
+    $wrapper_classes = array('slider-wrapper', 'relative');
+    if( $class ) $wrapper_classes[] = $class;
+    if( $visibility ) $wrapper_classes[] = $visibility;
+    $wrapper_classes = implode(" ", $wrapper_classes);
 
     $classes = array('slider');
 
     if ($type == 'fade') $classes[] = 'slider-type-'.$type;
-
-    // Hide if mobile is set to false
-    if($mobile !==  'true' && !$visibility) {$visibility = 'hide-for-small';}
 
     // Bullet style
     if($bullet_style) $classes[] = 'slider-nav-dots-'.$bullet_style;
@@ -85,19 +93,27 @@ function shortcode_ux_slider($atts, $content=null) {
 
     $classes = implode(" ", $classes);
 
-    // Inline CSS
-    $css_args = array(
-        'bg_color' => array(
-          'attribute' => 'background-color',
-          'value' => $bg_color,
-        ),
-        'margin' => array(
-          'attribute' => 'margin-bottom',
-          'value' => $margin,
-        )
-    );
+    // Inline CSS.
+	$css_args = array(
+		'bg_color' => array(
+			'attribute' => 'background-color',
+			'value'     => $bg_color,
+		),
+	);
+
+	$args = array(
+		'margin'      => array(
+			'selector' => '',
+			'property' => 'margin-bottom',
+		),
+		'slide_width' => array(
+			'selector'  => '.flickity-slider > *',
+			'property'  => 'max-width',
+			'important' => true,
+		),
+	);
 ?>
-<div class="slider-wrapper relative <?php echo $visibility; ?>" id="<?php echo $_id; ?>" <?php echo get_shortcode_inline_css($css_args); ?>>
+<div class="<?php echo $wrapper_classes; ?>" id="<?php echo $_id; ?>" <?php echo get_shortcode_inline_css($css_args); ?>>
     <div class="<?php echo $classes; ?>"
         data-flickity-options='{
             "cellAlign": "<?php echo $slide_align; ?>",
@@ -120,17 +136,13 @@ function shortcode_ux_slider($atts, $content=null) {
             "friction": <?php echo $friction; ?>
         }'
         >
-        <?php echo flatsome_contentfix($content); ?>
+        <?php echo do_shortcode( $content ); ?>
      </div>
 
      <div class="loading-spin dark large centered"></div>
 
-     <style scope="scope">
-        <?php if($slide_width) { ?>
-            #<?php echo $_id; ?> .flickity-slider > *{ max-width: <?php echo $slide_width; ?>!important;
-         <?php } ?>
-     </style>
-</div><!-- .ux-slider-wrapper -->
+	<?php echo ux_builder_element_style_tag( $_id, $args, $atts ); ?>
+</div>
 
 <?php
     $content = ob_get_contents();
