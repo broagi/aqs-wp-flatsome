@@ -116,12 +116,11 @@ function load_service_post($a){
 		$html .= '<div class="entry-inner">';    
 		$html .= '<h2 class="post-box-title">';
 		$html .= '<a href="'.get_permalink($post->ID).'">'.get_the_title($post->ID).'</a>';
+		$html .= '<span></span>';
+		$html .= '<a href="'.get_permalink($post->ID).'" class="more-title"><img src="'.get_template_directory_uri().'/assets/img/arrow.png" alt="" /></a>';
 		$html .= '</h2>';  
 		$html .= '<div class="entry">';
 		$html .= '<p>'.get_the_excerpt($post->ID).'</p>';
-		$html .= '</div>'; 
-		$html .= '<div class="entry-rm">';
-		$html .= '<a href="'.get_permalink($post->ID).'">'.__('Read more','sc').'</a>';
 		$html .= '</div>'; 
 		$html .= '</div>';  
 		$html .= '</div>';
@@ -215,4 +214,18 @@ function hrm_recent_post_category() {
 			<?php   }
 			wp_reset_query();
 		}
+
+		add_shortcode("title_sm","load_title_sm");
+		function load_title_sm($a) {
+			return '<div class="title-sm">'. $a['title'] .'</div>';
+		}
+		add_shortcode("title_lg","load_title_lg");
+		function load_title_lg($a) {
+			return '<div class="title-lg"><h2>'. $a['title'] .'</h2></div>';
+		}
+		add_shortcode("gird_line","load_gird_line");
+		function load_gird_line() {
+			return '<div class="gird-page"><div class="container"><span></span><span></span><span></span></div></div>';
+		}
 		?>
+		

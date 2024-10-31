@@ -21,7 +21,7 @@
 
 // ** MySQL settings ** //
 /** The name of the database for WordPress */
-define( 'DB_NAME', 'tamdous_aqsglobe' );
+define( 'DB_NAME', 'aqs' );
 
 /** MySQL database username */
 define( 'DB_USER', 'root' );

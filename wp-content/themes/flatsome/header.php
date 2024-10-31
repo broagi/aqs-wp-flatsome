@@ -29,7 +29,6 @@
 	?>
    </div><!-- header-wrapper-->
 </header>
-<div class="gird-page"><div class="container"><span></span><span></span><span></span></div></div>
 
 <?php do_action('flatsome_after_header'); ?>
 

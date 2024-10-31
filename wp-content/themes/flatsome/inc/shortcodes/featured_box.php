@@ -32,7 +32,7 @@ function featured_box( $atts, $content = null ) {
 	$classes[] = 'icon-box-' . $pos;
 
 	if ( $tooltip ) $classes[] = 'tooltip';
-	if ( $pos == 'center' ) $classes[] = 'text-center';
+	if ( $pos == 'center' ) $classes[] = '';
 	if ( $pos == 'left' || $pos == 'top' ) $classes[] = 'text-left';
 	if ( $pos == 'right' ) $classes[] = 'text-right';
 	if ( $font_size ) $classes[] = 'is-' . $font_size;

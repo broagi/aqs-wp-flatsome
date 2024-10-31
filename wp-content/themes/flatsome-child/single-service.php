@@ -9,13 +9,18 @@ get_header();
 
 ?>
 
-<div id="content" class="blog-wrapper blog-single page-wrapper">
-	<div class="banner-post">
-		<div class="cont-banner">
-			<div class="text-inner text-center">
-
-				<h3><span style="font-size: 150%;"><strong><?php echo  __( 'Service', 'hrm' ); ?></strong></span></h3>
-				<p><?php echo  __( 'Home', 'hrm' ); ?>&nbsp; &nbsp; &nbsp; &nbsp;<i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo  __( 'Service', 'hrm' ); ?></p>
+<div id="content" class="">
+<div class="banner-pages banner-post banner-service">
+		<div class="gird-page"><div class="container"><span></span><span></span><span></span></div></div>
+		<div class="banner-inner">
+			<div class="banner-bg"><div class="bg-loaded"></div></div>
+			<div class="banner-layers">
+				<div class="res-text">
+					<div class="text-inner">
+					<h3><span style="font-size: 150%;"><strong><?php echo  __( 'Service', 'hrm' ); ?></strong></span></h3>
+					<p><?php echo  __( 'Home', 'hrm' ); ?>&nbsp; &nbsp; &nbsp; &nbsp;<i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo  __( 'Service', 'hrm' ); ?></p>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -24,12 +29,10 @@ get_header();
 	?>
 
 	<?php if(!is_single() && flatsome_option('blog_featured') == 'top'){ get_template_part('template-parts/posts/featured-posts'); } ?>
-
+	<div class="section-padding">
 	<div class="row row-large <?php if(flatsome_option('blog_layout_divider')) echo 'row-divided ';?>">
-		<div class="post-sidebar large-3 col">
-			<?php get_sidebar(); ?>
-		</div><!-- .post-sidebar -->
-		<div class="large-9 col">
+
+		<div class="col">
 			<?php if(!is_single() && flatsome_option('blog_featured') == 'content'){ get_template_part('template-parts/posts/featured-posts'); } ?>
 
 			<?php if ( have_posts() ) : ?>
@@ -199,12 +202,12 @@ get_header();
 
 
 
-			</div><!-- .row -->
-
+			</div><!-- .row -->	
+			</div>
 			<?php 
 			do_action('flatsome_after_blog');
 			?>
-
+		
 		</div><!-- #content .page-wrapper -->
 
 		<?php get_footer();

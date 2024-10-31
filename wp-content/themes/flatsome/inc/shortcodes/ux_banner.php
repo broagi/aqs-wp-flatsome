@@ -159,6 +159,7 @@ function flatsome_ux_banner( $atts, $content = null ){
   ?>
 
   <div class="banner <?php echo $classes; ?>" id="<?php echo $_id; ?>">
+  <div class="gird-page"><div class="container"><span></span><span></span><span></span></div></div>
      <?php if($loading) echo '<div class="loading-spin dark centered"></div>'; ?>
      <div class="banner-inner fill">
         <div class="banner-bg fill" <?php echo $parallax; ?>>
