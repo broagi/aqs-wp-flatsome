@@ -17,8 +17,8 @@ global $flatsome_opt;
 				Hotline:<a href="tel: 842862636160"> <strong>(84 28) 6263 6160</strong></a></span>
 			</div>
 			<div class="col pd0 medium-6 small-12 large-6 text-right">
-					<a href="lien-he/?lang=vi" target="_self" class="button secondary">
-					<span>liên hệ</span>
+					<a href="<?php echo get_the_permalink(pll_get_post(get_page_by_path( 'lien-he' )->ID));?>" target="_self" class="button secondary">
+					<span><?php pll_e('Contact') ?></span>
 				</a>
 			</div>
 		</div>

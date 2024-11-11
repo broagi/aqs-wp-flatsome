@@ -1,9 +1,9 @@
-<?php 
+<?php
 add_action( 'wp_enqueue_scripts', 'hrm_styles' );
 add_action( 'init', function () {
 	add_ux_builder_post_type( 'service' );
 } );
-function hrm_styles() { 
+function hrm_styles() {
  		  // wp_enqueue_style( 'parent-style', get_template_directory_uri() . '/style.css' );
  		  // wp_enqueue_style( 'owl-style', get_stylesheet_directory_uri() . '/owl-slider/owl.carousel.css' );
 	wp_enqueue_style( 'awesome', get_stylesheet_directory_uri() . '/css/font-awesome.min.css' );
@@ -39,30 +39,30 @@ function load_project_post($a){
 		$args['cat'] = (int) $a['id'];
 	}
 
-	$html=''; 
+	$html='';
 	$html .='<ul class="posts-shortcode clearfix left-right">';
 	$posts = get_posts($args);
 	foreach($posts as $post){
-		$html .= '<li class="other-news clearfix">'; 
-		$html .= '<div class="inner-content">'; 
-		$html .= '<div class="post-thumbnail tie-appear">'; 
-		$html .= '<a href="'.get_permalink($post->ID).'"><img src="'.get_the_post_thumbnail_url($post->ID,'post-thumbnail').'"></a>';  
+		$html .= '<li class="other-news clearfix">';
+		$html .= '<div class="inner-content">';
+		$html .= '<div class="post-thumbnail tie-appear">';
+		$html .= '<a href="'.get_permalink($post->ID).'"><img src="'.get_the_post_thumbnail_url($post->ID,'post-thumbnail').'"></a>';
 		$html .= '</div>';
 		$html .= '<div class="entry-in-post">';
 		$html .= '<span class="post-box-time">';
 		$postdate = get_field('ngay_dang');
 		if($postdate[0] != 1) {
-			$html .= '<i class="fa fa-clock-o" aria-hidden="true"></i>'.get_the_time('d/m/Y', $post->ID).''; 
+			$html .= '<i class="fa fa-clock-o" aria-hidden="true"></i>'.get_the_time('d/m/Y', $post->ID).'';
 		}
-		$html .= '</span>';      
+		$html .= '</span>';
 		$html .= '<h2 class="post-box-title">';
 		$html .= '<a href="'.get_permalink($post->ID).'">'.get_the_title($post->ID).'</a>';
-		$html .= '</h2>';  
+		$html .= '</h2>';
 		$html .= '<div class="entry">';
 		$html .= '<p>'.wp_trim_words($post->post_content, 10).'</p>';
-		$html .= '</div>'; 
-		$html .= '</div>'; 
-		$html .= '</div>';  
+		$html .= '</div>';
+		$html .= '</div>';
+		$html .= '</div>';
 		$html .= '</li>';
 	}
 
@@ -105,24 +105,24 @@ function load_service_post($a){
 	$html .='<div class="posts-shortcode clearfix">';
 	$posts = get_posts($args);
 	foreach($posts as $post){
-		$html .= '<div class="service-post clearfix 2">'; 
-		$html .= '<div class="inner-content">'; 
-		$html .= '<div class="post-thumbnail tie-appear">'; 
+		$html .= '<div class="service-post clearfix 2">';
+		$html .= '<div class="inner-content">';
+		$html .= '<div class="post-thumbnail tie-appear">';
 		$html .= '<a href="'.get_permalink($post->ID).'"><img class="image" src="'.get_the_post_thumbnail_url($post->ID,'project-size').'"></a>';
-		$html .= '<a href="'.get_permalink($post->ID).'"><div class="middle">'; 
-		$html .= '<i class="fa fa-link" aria-hidden="true"></i>'; 
-		$html .= '</div></a>'; 
+		$html .= '<a href="'.get_permalink($post->ID).'"><div class="middle">';
+		$html .= '<i class="fa fa-link" aria-hidden="true"></i>';
+		$html .= '</div></a>';
 		$html .= '</div>';
-		$html .= '<div class="entry-inner">';    
+		$html .= '<div class="entry-inner">';
 		$html .= '<h2 class="post-box-title">';
 		$html .= '<a href="'.get_permalink($post->ID).'">'.get_the_title($post->ID).'</a>';
 		$html .= '<span></span>';
 		$html .= '<a href="'.get_permalink($post->ID).'" class="more-title"><img src="'.get_template_directory_uri().'/assets/img/arrow.png" alt="" /></a>';
-		$html .= '</h2>';  
+		$html .= '</h2>';
 		$html .= '<div class="entry">';
 		$html .= '<p>'.get_the_excerpt($post->ID).'</p>';
-		$html .= '</div>'; 
-		$html .= '</div>';  
+		$html .= '</div>';
+		$html .= '</div>';
 		$html .= '</div>';
 		$html .= '</div>';
 	}
@@ -184,11 +184,11 @@ function hrm_recent_post_category() {
 		<div class="show-related">
 				<ul class="related clearfix clear post-item">
 					<?php while ($related_post->have_posts()){
-						$related_post->the_post();?> 
-						<div class="other-news clearfix">  
-							<div class="inner-content">  
-								<div class="post-thumbnail tie-appear">  
-									<a href="<?php the_permalink() ?>"><img src="<?php the_post_thumbnail_url(); ?>"></a>   
+						$related_post->the_post();?>
+						<div class="other-news clearfix">
+							<div class="inner-content">
+								<div class="post-thumbnail tie-appear">
+									<a href="<?php the_permalink() ?>"><img src="<?php the_post_thumbnail_url(); ?>"></a>
 								</div>
 								<div class="entry-in-post">
 									<span class="post-box-time">
@@ -198,15 +198,15 @@ function hrm_recent_post_category() {
                                         ?>
                                     	    <i class="fa fa-clock-o" aria-hidden="true"></i><?php the_time('d/m/Y'); ?>
                                         <?php } ?>
-									</span>       
+									</span>
 									<h2 class="post-box-title">
 										<a href="<?php the_permalink() ?>"><?php the_title(); ?></a>
-									</h2>   
+									</h2>
 									<div class="entry">
 										<p><?php echo wp_trim_words( get_the_excerpt(), 8 ); ?></p>
-									</div>  
-								</div>  
-							</div>   
+									</div>
+								</div>
+							</div>
 						</div>
 						<?php } ?>
 					</ul>
@@ -228,4 +228,10 @@ function hrm_recent_post_category() {
 			return '<div class="gird-page"><div class="container"><span></span><span></span><span></span></div></div>';
 		}
 		?>
-		
+
+
+<?php
+  add_action('init', function() {
+    pll_register_string('contact', 'Contact', 'Theme');
+  });
+?>
