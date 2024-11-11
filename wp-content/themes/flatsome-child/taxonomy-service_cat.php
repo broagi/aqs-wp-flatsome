@@ -1,14 +1,5 @@
 <?php
-/**
- * The blog template file.
- *
- * @package flatsome
- */
-
- $cat = get_queried_object()->term_id;
-
 get_header();
-
 ?>
 
 <div id="content" class="">
@@ -30,8 +21,8 @@ get_header();
 </section>
 
 <?php
-			do_action('flatsome_after_blog');
-			?>
+  do_action('flatsome_after_blog');
+?>
 </div>
 
 <?php get_footer();
