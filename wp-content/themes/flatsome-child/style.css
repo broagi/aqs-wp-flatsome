@@ -6,11 +6,24 @@ Template: flatsome
 Version: 3.0
 */
 @import url('https://fonts.googleapis.com/css2?family=Anek+Latin:wght@100..800&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Titan+One&display=swap');
+@font-face {
+  font-family: 'avobold';
+  src: url('fonts/SVNAvobold.ttf');
+}
+@font-face {
+  font-family: 'utmavo';
+  src: url('fonts/UTMAVO.TTF');
+}
+@font-face {
+  font-family: 'utmavobold';
+  src: url('fonts/UTMAVOBOLD.TTF');
+}
 body {
   margin: 0;
   color: #222;
   font-size: 15px;
-  font-family: "Anek Latin", sans-serif !important;
+  /* font-family: "Anek Latin", sans-serif !important; */
+  font-family: "utmavo", sans-serif !important;
 }
 b, strong {
     font-weight: bolder;
@@ -79,7 +92,8 @@ span.widget-title {
     font-size: 15px;
     font-weight: 600;
     text-transform: initial;
-    font-family: "Anek Latin", sans-serif !important;
+    /* font-family: "Anek Latin", sans-serif !important; */
+    font-family: "utmavo", sans-serif !important;
 }
 .fix-d .row.large-columns-1.medium-columns-1.small-columns-1 {
     display: block;
@@ -190,7 +204,7 @@ ul.ab-li li {
 }
 .style-2 .post-thumbnail.tie-appear {
     max-height: initial;
-	
+
 }
 
 .post-thumbnail.tie-appear .image {
@@ -426,7 +440,7 @@ span.widget-title {
 }
 .widget>ul>li.cat-item>a {
     font-size: 14px;
-    color: black;   
+    color: black;
 }
 .widget>ul>li.cat-item>a:hover {
     color: #20bfdc;
@@ -553,7 +567,7 @@ div#comments {
     .service-post.clearfix{
         width: 50%;
     }
-    
+
 }
 @media(max-width: 767px){
     .form-reg1{
@@ -644,7 +658,8 @@ div#comments {
     color: #20bfdc;
 }
 #footer a {
-    font-family: "Anek Latin", sans-serif !important;
+    /* font-family: "Anek Latin", sans-serif !important; */
+    font-family: "utmavo", sans-serif !important;
     font-size: 18px;
 }
 #footer .icon {
