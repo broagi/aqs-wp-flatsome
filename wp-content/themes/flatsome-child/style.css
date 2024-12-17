@@ -772,6 +772,7 @@ div#comments {
     opacity: 0.3;
     z-index: 10;
     pointer-events: none;
+    display: none;
 }
 .gird-page .container {
     display: flex;
@@ -968,6 +969,16 @@ div#comments {
 .testimonial-box{
     position: relative;
     padding-left: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.15);
+    margin: 10px auto;
+    width: calc(100% - 20px);
+    padding: 30px;
+    align-items: flex-start !important;
+    display: block;
+    width: 800px;
+    max-width: 100%;
+    text-align: center;
 }
 .testimonial-box::before {
     content: ' ';
@@ -977,6 +988,24 @@ div#comments {
     width: 3px;
     height: 100%;
     background: linear-gradient(180deg, #25317B 0%, #20BFDC 98.78%);
+}
+.testimonial-box .icon-box-text  {
+    padding: 20px 0 0 0 !important;
+}
+.testimonial-image {
+    margin: auto;
+    width: 150px !important;
+    height: 100px;
+    border: 1px solid #ddd;
+    border-radius: 0 !important;
+    margin: 0;
+    margin: auto;
+}
+.slider-nav-outside .flickity-prev-next-button.previous {
+    left: 0;
+}
+.slider-nav-outside .flickity-prev-next-button.next {
+    right: 0;
 }
 .banner {
     position: relative;
