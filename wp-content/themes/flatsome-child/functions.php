@@ -233,5 +233,13 @@ function hrm_recent_post_category() {
 <?php
   add_action('init', function() {
     pll_register_string('contact', 'Contact', 'Theme');
+    pll_register_string('home1', 'Home1', 'Theme');
+    pll_register_string('service', 'Service', 'Theme');
+    pll_register_string('Số hiệu chứng chỉ', 'Số hiệu chứng chỉ', 'Theme');
+    pll_register_string('Tên công ty', 'Tên công ty', 'Theme');
+    pll_register_string('Ngày cấp', 'Ngày cấp', 'Theme');
+    pll_register_string('Tình trạng hiệu lực', 'Tình trạng hiệu lực', 'Theme');
+    pll_register_string('Nhập số hiệu chứng chỉ', 'Nhập số hiệu chứng chỉ', 'Theme');
+    pll_register_string('Kiểm tra', 'Kiểm tra', 'Theme');
   });
 ?>

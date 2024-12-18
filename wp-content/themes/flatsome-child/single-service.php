@@ -17,14 +17,14 @@ get_header();
 			<div class="banner-layers">
 				<div class="res-text">
 					<div class="text-inner">
-					<h3><span style="font-size: 150%;"><strong><?php echo  __( 'Service', 'hrm' ); ?></strong></span></h3>
-					<p><?php echo  __( 'Home', 'hrm' ); ?>&nbsp; &nbsp; &nbsp; &nbsp;<i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo  __( 'Service', 'hrm' ); ?></p>
+					<h3><span style="font-size: 150%;"><strong><?php pll_e('Service'); ?></strong></span></h3>
+					<p><?php pll_e('Home1'); ?>&nbsp; &nbsp; &nbsp; &nbsp;<i class="fa fa-angle-right" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php pll_e('Service'); ?></p>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<?php 
+	<?php
 	do_action('flatsome_before_blog');
 	?>
 
@@ -114,13 +114,13 @@ get_header();
 								flatsome_content_nav( 'nav-below' );
 							endif; ?>
 							<?php hrm_recent_post_category(); ?>
-							
-    						<?php 
+
+    						<?php
     						$listnews = rwmb_meta('page-sel');
     						$args2 = array(
     							'post_type'      => 'post',
     							'posts_per_page' => 6,
-    							'post__in' => $listnews,    
+    							'post__in' => $listnews,
     						);
     						$query2 = new WP_Query( $args2 ); ?>
     						<?php if ( $query2->have_posts() ){ ?>
@@ -131,10 +131,10 @@ get_header();
     								<div class="show-related">
     									<ul class="related clearfix clear post-item">
     										<?php while ( $query2->have_posts() ) { $query2->the_post(); ?>
-    											<div class="other-news clearfix">  
-    												<div class="inner-content">  
-    													<div class="post-thumbnail tie-appear">  
-    														<a href="<?php the_permalink() ?>"><img src="<?php the_post_thumbnail_url(); ?>"></a>   
+    											<div class="other-news clearfix">
+    												<div class="inner-content">
+    													<div class="post-thumbnail tie-appear">
+    														<a href="<?php the_permalink() ?>"><img src="<?php the_post_thumbnail_url(); ?>"></a>
     													</div>
     													<div class="entry-in-post">
     														<span class="post-box-time">
@@ -144,17 +144,17 @@ get_header();
 															    ?>
 																    <?php echo get_the_date('d/m/Y'); ?>
 															    <?php } ?>
-    														</span>       
+    														</span>
     														<h2 class="post-box-title">
     															<a href="<?php the_permalink() ?>"><?php the_title(); ?></a>
-    														</h2>   
+    														</h2>
     														<div class="entry">
     															<p><?php
     															echo get_the_excerpt();
     															?></p>
-    														</div>  
-    													</div>  
-    												</div>   
+    														</div>
+    													</div>
+    												</div>
     											</div>
     											<?php }
     											wp_reset_postdata();
@@ -163,14 +163,14 @@ get_header();
     								</div>
     							</div>
 							<?php } ?>
-							
+
 								<div class="dow-doc">
 									<div class="blog-box-title mt-4">
 										<span style="color: #25317b; font-size: 180%;"><strong><?php echo  __( 'Toolkit', 'hrm' ); ?></strong></span>
 										<div class="list-doc">
-											<?php 
+											<?php
 											$group_values = rwmb_meta( 'dow-tl');
-											
+
 											if (!empty( $group_values ) ) {
 												foreach ( $group_values as $group_value ) {
 											      if (!empty( $group_value['link-d'] ) ) {
@@ -202,12 +202,12 @@ get_header();
 
 
 
-			</div><!-- .row -->	
+			</div><!-- .row -->
 			</div>
-			<?php 
+			<?php
 			do_action('flatsome_after_blog');
 			?>
-		
+
 		</div><!-- #content .page-wrapper -->
 
 		<?php get_footer();

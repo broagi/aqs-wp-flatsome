@@ -1268,3 +1268,12 @@ div#comments {
         padding:30px 0 !important;
     }
 }
+#fixedLinks {
+  border: medium;
+  visibility: visible;
+  bottom: 100px;
+  right: 24px;
+  position: fixed;
+  z-index: 2;
+  opacity: 0.9;
+}

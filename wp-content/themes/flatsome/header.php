@@ -32,4 +32,10 @@
 
 <?php do_action('flatsome_after_header'); ?>
 
+<div id="fixedLinks">
+            <a href="https://zalo.me/1302252232013711046" target="_blank">
+        <img src="/wp-content/images/zalo.svg" alt="zalo">
+      </a>
+          </div>
+
 <main id="main" class="<?php flatsome_main_classes();  ?>">
