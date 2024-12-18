@@ -179,7 +179,7 @@ function hrm_recent_post_category() {
 	if( $related_post->have_posts() ){
 		?>
 		<div class="blog-box-title mt-4">
-			<span style="color: #25317b; font-size: 180%;"><strong><?php echo  __( 'Related', 'hrm' ); ?></strong> <?php echo  __( 'Post', 'hrm' ); ?></span>
+			<span style="color: #25317b; font-size: 180%;"><strong><?php pll_e('Related Post'); ?></strong></span>
 		</div>
 		<div class="show-related">
 				<ul class="related clearfix clear post-item">
@@ -241,5 +241,8 @@ function hrm_recent_post_category() {
     pll_register_string('Tình trạng hiệu lực', 'Tình trạng hiệu lực', 'Theme');
     pll_register_string('Nhập số hiệu chứng chỉ', 'Nhập số hiệu chứng chỉ', 'Theme');
     pll_register_string('Kiểm tra', 'Kiểm tra', 'Theme');
+    pll_register_string('Toolkit', 'Toolkit', 'Theme');
+    pll_register_string('Related Post', 'Related Post', 'Theme');
+    pll_register_string('Related News', 'Related News', 'Theme');
   });
 ?>

@@ -126,7 +126,7 @@ get_header();
     						<?php if ( $query2->have_posts() ){ ?>
     							<div class="news-related">
     								<div class="blog-box-title mt-4">
-    									<span style="color: #25317b; font-size: 180%;"><strong><?php echo  __( 'News', 'hrm' ); ?></strong> <?php echo  __( 'related', 'hrm' ); ?></span>
+    									<span style="color: #25317b; font-size: 180%;"><strong><?php pll_e('Related News'); ?></strong></span>
     								</div>
     								<div class="show-related">
     									<ul class="related clearfix clear post-item">
@@ -166,7 +166,7 @@ get_header();
 
 								<div class="dow-doc">
 									<div class="blog-box-title mt-4">
-										<span style="color: #25317b; font-size: 180%;"><strong><?php echo  __( 'Toolkit', 'hrm' ); ?></strong></span>
+										<span style="color: #25317b; font-size: 180%;"><strong><?php pll_e('Toolkit'); ?></strong></span>
 										<div class="list-doc">
 											<?php
 											$group_values = rwmb_meta( 'dow-tl');
